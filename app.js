@@ -1,4 +1,5 @@
 import { Application } from "https://deno.land/x/abc@v1.2.0/mod.ts";
+import { enableCORS } from "./controller/helper/corshelper.js";
 import { requireAuthorization } from "./controller/helper/authorizationhelper.js";
 import * as statusController from "./controller/statuscontroller.js";
 import * as usersController from "./controller/userscontroller.js";
@@ -6,6 +7,9 @@ import * as usersController from "./controller/userscontroller.js";
 const server = new Application();
 const port = parseInt(Deno.args[0]);
 const apiPrefix = "/api";
+
+// Enable CORS
+server.use(enableCORS);
 
 // Serve static files
 server.static("/", "./public");
