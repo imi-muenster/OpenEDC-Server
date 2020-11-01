@@ -1,10 +1,10 @@
 import { rights } from "./helper/authorizationhelper.js";
 
 export class User {
-    constructor(oid, username, password, hasInitialPassword, encryptedDecryptionKey, rights, site) {
+    constructor(oid, username, hashedPassword, hasInitialPassword, encryptedDecryptionKey, rights, site) {
         this.oid = oid;
         this.username = username;
-        this.password = password;
+        this.hashedPassword = hashedPassword;
         this.hasInitialPassword = hasInitialPassword;
         this.encryptedDecryptionKey = encryptedDecryptionKey;
         this.rights = rights;
@@ -36,13 +36,15 @@ export const getMe = (context, user) => {
 export const initializeUser = async context => {
     if (users.length > 0) return context.string("The server has already been initialized.", 400);
 
-    const { username, password, encryptedDecryptionKey } = await context.body;
+    // TODO: Workaround since content-type header with application/json in the webapp leads to a currently unresolvable cors error
+    const requestBody = await context.body;
+    const { username, hashedPassword, encryptedDecryptionKey } = JSON.parse(requestBody);
     
     if (!username) return context.string("Username is missing in the request body.", 400);
-    if (!password) return context.string("Password is missing in the request body.", 400);
+    if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
     if (!encryptedDecryptionKey) return context.string("An encrypted decryption key is missing in the request body.", 400);
 
-    const user = new User(ownerOID, username, password, false, encryptedDecryptionKey, [
+    const user = new User(ownerOID, username, hashedPassword, false, encryptedDecryptionKey, [
         rights.PROJECTOPTIONS,
         rights.EDITMETADATA,
         rights.ADDSUBJECTS,
@@ -57,10 +59,13 @@ export const initializeUser = async context => {
 // TODO: setUserCredentials and setUserRights are required instead as well as a setOwnPassword
 export const setUser = async context => {
     const oid = context.params.oid;
-    const { username, password, rights, site, encryptedDecryptionKey } = await context.body;
+
+    // TODO: Workaround since content-type header with application/json in the webapp leads to a currently unresolvable cors error
+    const requestBody = await context.body;
+    const { username, hashedPassword, rights, site, encryptedDecryptionKey } = JSON.parse(requestBody);
     
     if (!username) return context.string("Username is missing in the request body.", 400);
-    if (!password) return context.string("Password is missing in the request body.", 400);
+    if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
     if (!encryptedDecryptionKey) return context.string("An encrypted decryption key is missing in the request body.", 400);
     if (!Array.isArray(rights) || rights.length == 0) return context.string("User rights are missing in the request body.", 400);
 
@@ -71,7 +76,7 @@ export const setUser = async context => {
     // Remove user if already present
     users = users.filter(user => user.oid != oid);
 
-    const user = new User(oid, username, password, true, encryptedDecryptionKey, rights, site);
+    const user = new User(oid, username, hashedPassword, true, encryptedDecryptionKey, rights, site);
     users.push(user);
     // TODO: Store users array
 
