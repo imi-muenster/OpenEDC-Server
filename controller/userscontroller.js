@@ -1,3 +1,4 @@
+import * as storageHelper from "./helper/storagehelper.js";
 import { rights } from "./helper/authorizationhelper.js";
 
 export class User {
@@ -15,6 +16,7 @@ export class User {
 const ownerOID = 1;
 
 export let users = [];
+// export let users = storageHelper.getUsers();
 
 export const getUsers = context => {
     return context.json(users);
@@ -44,7 +46,7 @@ export const initializeUser = async context => {
 
     const user = new User(ownerOID, username, hashedPassword, false, encryptedDecryptionKey, Object.values(rights));
     users.push(user);
-    // TODO: Store users array
+    storageHelper.storeUsers(users);
 
     return context.json(user, 201);
 };
@@ -68,7 +70,7 @@ export const setUser = async context => {
 
     const user = new User(oid, username, hashedPassword, true, encryptedDecryptionKey, rights, site);
     users.push(user);
-    // TODO: Store users array
+    storageHelper.storeUsers(users);
 
     return context.json(user, 201);
 };
@@ -82,7 +84,7 @@ export const deleteUser = context => {
     if (!user) return context.string("User could not be found.", 404);
 
     users = users.filter(user => user.oid != oid);
-    // TODO: Store users array
+    storageHelper.storeUsers(users);
 
     return context.json(user);
 };
