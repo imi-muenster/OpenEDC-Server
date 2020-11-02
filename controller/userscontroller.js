@@ -42,12 +42,7 @@ export const initializeUser = async context => {
     if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
     if (!encryptedDecryptionKey) return context.string("An encrypted decryption key is missing in the request body.", 400);
 
-    const user = new User(ownerOID, username, hashedPassword, false, encryptedDecryptionKey, [
-        rights.PROJECTOPTIONS,
-        rights.EDITMETADATA,
-        rights.ADDSUBJECTS,
-        rights.MANAGESUBJECTS
-    ]);
+    const user = new User(ownerOID, username, hashedPassword, false, encryptedDecryptionKey, Object.values(rights));
     users.push(user);
     // TODO: Store users array
 

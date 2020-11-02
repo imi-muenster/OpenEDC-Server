@@ -3,7 +3,8 @@ import { users } from "../userscontroller.js";
 export const rights = {
     PROJECTOPTIONS: "Project options",
     EDITMETADATA: "Edit metadata",
-    ADDSUBJECTS: "Add subjects",
+    VIEWSUBJECTS: "View subject data",
+    ADDSUBJECTS: "Add subject data",
     MANAGESUBJECTS: "Manage subjects"
 };
 

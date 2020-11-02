@@ -30,6 +30,7 @@ server
     .post(apiPrefix + "/users/initialize", usersController.initializeUser)
     .put(apiPrefix + "/users/:oid", usersController.setUser, requireAuthorization)
     .delete(apiPrefix + "/users/:oid", usersController.deleteUser, requireAuthorization)
+    .get(apiPrefix + "/metadata", metadataController.getMetadata, requireAuthorization)
     .put(apiPrefix + "/metadata", metadataController.setMetadata, requireAuthorization);
 
 // Start server
