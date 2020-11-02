@@ -36,9 +36,7 @@ export const getMe = (context, user) => {
 export const initializeUser = async context => {
     if (users.length > 0) return context.string("The server has already been initialized.", 400);
 
-    // TODO: Workaround since content-type header with application/json in the webapp leads to a currently unresolvable cors error
-    const requestBody = await context.body;
-    const { username, hashedPassword, encryptedDecryptionKey } = JSON.parse(requestBody);
+    const { username, hashedPassword, encryptedDecryptionKey } = await context.body;
     
     if (!username) return context.string("Username is missing in the request body.", 400);
     if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
@@ -59,10 +57,7 @@ export const initializeUser = async context => {
 // TODO: setUserCredentials and setUserRights are required instead as well as a setOwnPassword
 export const setUser = async context => {
     const oid = context.params.oid;
-
-    // TODO: Workaround since content-type header with application/json in the webapp leads to a currently unresolvable cors error
-    const requestBody = await context.body;
-    const { username, hashedPassword, rights, site, encryptedDecryptionKey } = JSON.parse(requestBody);
+    const { username, hashedPassword, rights, site, encryptedDecryptionKey } = await context.body;
     
     if (!username) return context.string("Username is missing in the request body.", 400);
     if (!hashedPassword) return context.string("Password is missing in the request body.", 400);

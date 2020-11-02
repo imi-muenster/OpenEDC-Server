@@ -8,7 +8,7 @@ export const rights = {
 };
 
 export const requireAuthorization = next => context => {
-    const authentication = context.request.headers.get("authorization");
+    const authentication = context.request.headers.get("Authorization");
     if (!authentication || !authentication.split(" ")[0] == "Basic") return noAuthentication(context);
 
     const basicAuthParts = atob(authentication.split(" ")[1]).split(":");
@@ -18,6 +18,7 @@ export const requireAuthorization = next => context => {
     const user = users.find(user => user.username == username);
     if (!user || user.hashedPassword != hashedPassword) return badAuthentication(context);
 
+    // TODO: Maybe replace by function.name;
     switch (next.name) {
         case "getUsers":
         case "getUser":
@@ -25,12 +26,15 @@ export const requireAuthorization = next => context => {
         case "deleteUser":
             if (!user.rights.includes(rights.PROJECTOPTIONS)) return noAuthorization(context);
             break;
+        case "setMetadata":
+            if (!user.rights.includes(rights.EDITMETADATA)) return noAuthorization(context);
+            break;
     }
 
     return next(context, user);
 };
 
-const noAuthentication= context => context.string("No authentication header present in the request.", 401);
+const noAuthentication= context => context.string("No authorization header present in the request.", 401);
 
 const badAuthentication = context => context.string("User not found or wrong password entered.", 401);
 
