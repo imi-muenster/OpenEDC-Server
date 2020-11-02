@@ -19,12 +19,12 @@ const loadJSON = fileName => {
     return JSON.parse(Deno.readTextFileSync(directory + fileName));
 }
 
-const storeText = (fileName, data) => {
+const storeXML = (fileName, data) => {
     ensureDirectoryExists();
     Deno.writeTextFileSync(directory + fileName, data);
 }
 
-const loadText = fileName => {
+const loadXML = fileName => {
     return Deno.readTextFileSync(directory + fileName);
 }
 
@@ -38,9 +38,17 @@ export const getUsers = () => {
 }
 
 export const storeMetadata = metadata => {
-    storeText(metadataFileName, metadata);
+    storeXML(metadataFileName, metadata);
 }
 
 export const getMetadata = () => {
-    return loadText(metadataFileName);
+    return loadXML(metadataFileName);
+}
+
+export const storeAdmindata = admindata => {
+    storeXML(admindataFileName, admindata);
+}
+
+export const getAdmindata = () => {
+    return loadXML(admindataFileName);
 }

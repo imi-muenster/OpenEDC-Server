@@ -4,6 +4,7 @@ import { requireAuthorization } from "./controller/helper/authorizationhelper.js
 import * as statusController from "./controller/statuscontroller.js";
 import * as usersController from "./controller/userscontroller.js";
 import * as metadataController from "./controller/metadatacontroller.js";
+import * as admindataController from "./controller/admindatacontroller.js";
 
 const server = new Application();
 const port = parseInt(Deno.args[0]);
@@ -31,7 +32,9 @@ server
     .put(apiPrefix + "/users/:oid", usersController.setUser, requireAuthorization)
     .delete(apiPrefix + "/users/:oid", usersController.deleteUser, requireAuthorization)
     .get(apiPrefix + "/metadata", metadataController.getMetadata, requireAuthorization)
-    .put(apiPrefix + "/metadata", metadataController.setMetadata, requireAuthorization);
+    .put(apiPrefix + "/metadata", metadataController.setMetadata, requireAuthorization)
+    .get(apiPrefix + "/admindata", admindataController.getAdmindata, requireAuthorization)
+    .put(apiPrefix + "/admindata", admindataController.setAdmindata, requireAuthorization);
 
 // Start server
 server.start({ port });
