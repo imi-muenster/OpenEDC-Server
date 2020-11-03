@@ -5,6 +5,7 @@ import * as statusController from "./controller/statuscontroller.js";
 import * as usersController from "./controller/userscontroller.js";
 import * as metadataController from "./controller/metadatacontroller.js";
 import * as admindataController from "./controller/admindatacontroller.js";
+import * as clinicaldataController from "./controller/clinicaldatacontroller.js";
 
 const server = new Application();
 const port = parseInt(Deno.args[0]);
@@ -34,7 +35,10 @@ server
     .get(apiPrefix + "/metadata", metadataController.getMetadata, requireAuthorization)
     .put(apiPrefix + "/metadata", metadataController.setMetadata, requireAuthorization)
     .get(apiPrefix + "/admindata", admindataController.getAdmindata, requireAuthorization)
-    .put(apiPrefix + "/admindata", admindataController.setAdmindata, requireAuthorization);
+    .put(apiPrefix + "/admindata", admindataController.setAdmindata, requireAuthorization)
+    .get(apiPrefix + "/clinicaldata", clinicaldataController.getSubjects, requireAuthorization)
+    .get(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.getClinicaldata, requireAuthorization)
+    .put(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.setClinicaldata, requireAuthorization);
 
 // Start server
 server.start({ port });

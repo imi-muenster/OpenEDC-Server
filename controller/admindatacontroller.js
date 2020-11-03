@@ -6,6 +6,8 @@ export const getAdmindata = async context => {
 };
 
 export const setAdmindata = async context => {
-    storageHelper.storeAdmindata(await context.body);
+    const admindata = await context.body;
+    storageHelper.storeAdmindata(admindata);
+    
     return context.string("Admindata successfully stored.", 201);
 };

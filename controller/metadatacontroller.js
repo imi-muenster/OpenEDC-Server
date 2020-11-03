@@ -6,6 +6,8 @@ export const getMetadata = async context => {
 };
 
 export const setMetadata = async context => {
-    storageHelper.storeMetadata(await context.body);
+    const metadata = await context.body;
+    storageHelper.storeMetadata(metadata);
+
     return context.string("Metadata successfully stored.", 201);
 };
