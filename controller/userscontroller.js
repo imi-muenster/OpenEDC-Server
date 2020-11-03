@@ -67,25 +67,30 @@ export const initializeUser = async context => {
     return context.json(user, 201);
 };
 
-// TODO: setUserCredentials and setUserRights are required instead
 export const setUser = async context => {
     const oid = context.params.oid;
-    const { username, hashedPassword, rights, site, encryptedDecryptionKey } = await context.body;
+    const { username, hashedPassword, encryptedDecryptionKey, rights, site } = await context.body;
     
-    if (!username) return context.string("Username is missing in the request body.", 400);
-    if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
-    if (!encryptedDecryptionKey) return context.string("An encrypted decryption key is missing in the request body.", 400);
-    if (!Array.isArray(rights) || rights.length == 0) return context.string("User rights are missing in the request body.", 400);
+    // This function may be used to set the login credentials, rights, or site of a user -- however, not all information must be present together
+    let user = users.find(user => user.oid == oid);
+    if (user) {
+        if (username && hashedPassword && encryptedDecryptionKey) {
+            user.username = username;
+            user.hashedPassword = hashedPassword;
+            user.hasInitialPassword = true;
+            user.encryptedDecryptionKey = encryptedDecryptionKey;
+        }
+        user.rights = rights;
+        user.site = site;
+    } else {
+        // Test if the username is already occupied
+        const existingUser = users.find(user => user.username == username);
+        if (existingUser && existingUser.oid != oid) return context.string("There exists another user with the same username.", 400);
 
-    // Test if the username is already occupied
-    const existingUser = users.find(user => user.username == username);
-    if (existingUser && existingUser.oid != oid) return context.string("There exists another user with the same username.", 400);
+        user = new User(oid, username, hashedPassword, true, encryptedDecryptionKey, rights, site);
+        users.push(user);
+    }
 
-    // Remove user if already present
-    users = users.filter(user => user.oid != oid);
-
-    const user = new User(oid, username, hashedPassword, true, encryptedDecryptionKey, rights, site);
-    users.push(user);
     storageHelper.storeUsers(users);
 
     return context.json(user, 201);

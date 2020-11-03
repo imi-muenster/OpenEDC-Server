@@ -3,7 +3,6 @@ import { users } from "../userscontroller.js";
 export const rights = {
     PROJECTOPTIONS: "Project options",
     EDITMETADATA: "Edit metadata",
-    VIEWSUBJECTDATA: "View subject data",
     ADDSUBJECTDATA: "Add subject data",
     MANAGESUBJECTS: "Manage subjects"
 };
@@ -26,17 +25,13 @@ export const requireAuthorization = next => context => {
         case "setUser":
         case "deleteUser":
         case "setAdmindata":
-            if (!user.rights.includes(rights.PROJECTOPTIONS)) return noAuthorization(context);
+            if (!user.rights || !user.rights.includes(rights.PROJECTOPTIONS)) return noAuthorization(context);
             break;
         case "setMetadata":
-            if (!user.rights.includes(rights.EDITMETADATA)) return noAuthorization(context);
-            break;
-        case "getSubjects":
-        case "getClinicaldata":
-            if (!user.rights.includes(rights.VIEWSUBJECTDATA)) return noAuthorization(context);
+            if (!user.rights || !user.rights.includes(rights.EDITMETADATA)) return noAuthorization(context);
             break;
         case "setClinicaldata":
-            if (!user.rights.includes(rights.ADDSUBJECTDATA)) return noAuthorization(context);
+            if (!user.rights || !user.rights.includes(rights.ADDSUBJECTDATA)) return noAuthorization(context);
             break;
     }
 
