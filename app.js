@@ -29,6 +29,7 @@ server
     .get(apiPrefix + "/users", usersController.getUsers, requireAuthorization)
     .get(apiPrefix + "/users/:oid", usersController.getUser, requireAuthorization)
     .get(apiPrefix + "/users/me", usersController.getMe, requireAuthorization)
+    .put(apiPrefix + "/users/me", usersController.setMe, requireAuthorization)
     .post(apiPrefix + "/users/initialize", usersController.initializeUser)
     .put(apiPrefix + "/users/:oid", usersController.setUser, requireAuthorization)
     .delete(apiPrefix + "/users/:oid", usersController.deleteUser, requireAuthorization)

@@ -35,6 +35,22 @@ export const getMe = (context, user) => {
     return context.json(user);
 }
 
+export const setMe = async (context, user) => {
+    const { username, hashedPassword, encryptedDecryptionKey } = await context.body;
+
+    if (!username) return context.string("Username is missing in the request body.", 400);
+    if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
+    if (!encryptedDecryptionKey) return context.string("An encrypted decryption key is missing in the request body.", 400);
+
+    user.username = username;
+    user.hashedPassword = hashedPassword;
+    user.hasInitialPassword = false;
+    user.encryptedDecryptionKey = encryptedDecryptionKey;
+    storageHelper.storeUsers(users);
+    
+    return context.json(user, 201);
+}
+
 export const initializeUser = async context => {
     if (users.length > 0) return context.string("The server has already been initialized.", 400);
 
@@ -51,7 +67,7 @@ export const initializeUser = async context => {
     return context.json(user, 201);
 };
 
-// TODO: setUserCredentials and setUserRights are required instead as well as a setOwnPassword
+// TODO: setUserCredentials and setUserRights are required instead
 export const setUser = async context => {
     const oid = context.params.oid;
     const { username, hashedPassword, rights, site, encryptedDecryptionKey } = await context.body;

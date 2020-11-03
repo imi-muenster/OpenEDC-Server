@@ -3,7 +3,7 @@ import * as storageHelper from "./helper/storagehelper.js";
 export const getSubjects = (context, user) => {
    // TODO: Filter by user site
 
-   return storageHelper.getClinicaldataFileNames();
+   return context.json(storageHelper.getClinicaldataFileNames(), 200);
 }
 
 // TODO: Naming -- clinicaldata or subjectdata?
