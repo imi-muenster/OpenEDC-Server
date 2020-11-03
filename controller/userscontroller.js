@@ -31,6 +31,10 @@ export const getUser = context => {
     return context.json(user);
 };
 
+export const getRights = context => {
+    return context.json(rights);
+};
+
 export const getMe = (context, user) => {
     return context.json(user);
 }

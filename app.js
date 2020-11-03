@@ -28,6 +28,7 @@ server
     .get(apiPrefix + "/status", statusController.getStatus)
     .get(apiPrefix + "/users", usersController.getUsers, requireAuthorization)
     .get(apiPrefix + "/users/:oid", usersController.getUser, requireAuthorization)
+    .get(apiPrefix + "/users/rights", usersController.getRights)
     .get(apiPrefix + "/users/me", usersController.getMe, requireAuthorization)
     .put(apiPrefix + "/users/me", usersController.setMe, requireAuthorization)
     .post(apiPrefix + "/users/initialize", usersController.initializeUser)
