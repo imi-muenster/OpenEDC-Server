@@ -1,3 +1,5 @@
+import { User } from "../../models/usermodel.js";
+
 const directories = {
     userdata: "./data/",
     metadata: "./data/metadata/",
@@ -40,6 +42,9 @@ export const storeUsers = users => {
 
 export const getUsers = () => {
     const users = loadJSON(directories.userdata + usersFileName);
+    
+    // TODO: Transform into user class instances
+
     return users ? users : [];
 }
 
