@@ -14,8 +14,8 @@ const apiPrefix = "/api";
 // Enable CORS
 const corsConfig = {
     allowOrigins: ["*"],
-    allowMethods: ["GET, POST, PUT, DELETE"],
-    allowHeaders: ["Content-Type, Authorization"]
+    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+    allowHeaders: ["Authorization", "Content-Type"]
   };
 server.use(cors(corsConfig));
 
@@ -40,7 +40,8 @@ server
     .put(apiPrefix + "/admindata", admindataController.setAdmindata, requireAuthorization)
     .get(apiPrefix + "/clinicaldata", clinicaldataController.getSubjects, requireAuthorization)
     .get(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.getClinicaldata, requireAuthorization)
-    .put(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.setClinicaldata, requireAuthorization);
+    .put(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.setClinicaldata, requireAuthorization)
+    .delete(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.deleteClinicaldata, requireAuthorization);
 
 // Start server
 server.start({ port });

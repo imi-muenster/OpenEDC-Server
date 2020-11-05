@@ -33,6 +33,8 @@ export const requireAuthorization = next => context => {
         case "setClinicaldata":
             if (!user.hasAuthorizationFor(rights.ADDSUBJECTDATA)) return noAuthorization(context);
             break;
+        case "deleteClinicaldata":
+            if (!user.hasAuthorizationFor(rights.MANAGESUBJECTS)) return noAuthorization(context);
     }
 
     return next(context, user);

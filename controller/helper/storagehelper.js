@@ -81,3 +81,7 @@ export const getClinicaldataFileNames = () => {
 
     return clinicaldataFileNames;
 }
+
+export const removeClinicaldata = fileName => {
+    Deno.removeSync(directories.clinicaldata + fileName);
+}

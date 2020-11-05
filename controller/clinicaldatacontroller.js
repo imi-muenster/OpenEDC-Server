@@ -21,3 +21,10 @@ export const setClinicaldata = async context => {
 
     return context.string("Metadata successfully stored.", 201);
 };
+
+export const deleteClinicaldata = async context => {
+    const fileName = context.params.fileName;
+    storageHelper.removeClinicaldata(fileName);
+
+    return context.string("Clinicaldata successfully deleted.");
+};
