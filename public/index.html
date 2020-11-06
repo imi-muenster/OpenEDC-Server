@@ -2,11 +2,21 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>This is a test</title>
+        <title>OpenEDC Server</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./style.css">
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                max-width: 500px;
+                margin: 50px auto;
+                line-height: 1.5;
+            }
+        </style>
     </head>
     <body>
-        <h1>This is a test</h1>
+        <h1>OpenEDC Server</h1>
+        <p>Your OpenEDC Server is configured and running. You can already sync data that you have locally captured on <a href="#" target="_blank">openedc.org</a> with it.</p>
+        <p>However, to be able to work with the data, please move all files from the <a href="#" target="_blank">OpenEDC App repository</a> to the <i>/public</i> folder of your OpenEDC Server instance on your web server. Thereby, your OpenEDC Server will host the OpenEDC App and you can simply refresh this page to use the application.</p>
+        <p>In a future version, it is intented that the server can automatically download all required files to this directory.</p>
     </body>
 </html>

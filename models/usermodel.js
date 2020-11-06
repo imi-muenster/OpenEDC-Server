@@ -5,7 +5,7 @@ export class User {
         this.hashedPassword = hashedPassword;
         this.hasInitialPassword = hasInitialPassword;
         this.encryptedDecryptionKey = encryptedDecryptionKey;
-        this.rights = rights;
+        this.rights = rights || [];
         this.site = site;
     }
 
