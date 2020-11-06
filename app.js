@@ -14,7 +14,7 @@ const apiPrefix = "/api";
 // Enable CORS
 const corsConfig = {
     allowOrigins: ["*"],
-    allowMethods: ["GET", "POST", "PUT", "DELETE"],
+    allowMethods: ["GET", "PUT", "DELETE"],
     allowHeaders: ["Authorization", "Content-Type"]
   };
 server.use(cors(corsConfig));
@@ -31,7 +31,7 @@ server
     .get(apiPrefix + "/users/rights", usersController.getRights)
     .get(apiPrefix + "/users/me", usersController.getMe, requireAuthorization)
     .put(apiPrefix + "/users/me", usersController.setMe, requireAuthorization)
-    .post(apiPrefix + "/users/initialize", usersController.initializeUser)
+    .put(apiPrefix + "/users/initialize/:oid", usersController.initializeUser)
     .put(apiPrefix + "/users/:oid", usersController.setUser, requireAuthorization)
     .delete(apiPrefix + "/users/:oid", usersController.deleteUser, requireAuthorization)
     .get(apiPrefix + "/metadata", metadataController.getMetadata, requireAuthorization)

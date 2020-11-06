@@ -2,8 +2,6 @@ import * as storageHelper from "./helper/storagehelper.js";
 import { User } from "../models/usermodel.js";
 import { rights } from "./helper/authorizationhelper.js";
 
-const ownerOID = 1;
-
 export let users = [];
 // export let users = storageHelper.getUsers();
 
@@ -47,13 +45,14 @@ export const setMe = async (context, user) => {
 export const initializeUser = async context => {
     if (users.length > 0) return context.string("The server has already been initialized.", 400);
 
+    const oid = context.params.oid;
     const { username, hashedPassword, encryptedDecryptionKey } = await context.body;
     
     if (!username) return context.string("Username is missing in the request body.", 400);
     if (!hashedPassword) return context.string("Password is missing in the request body.", 400);
     if (!encryptedDecryptionKey) return context.string("An encrypted decryption key is missing in the request body.", 400);
 
-    const user = new User(ownerOID, username, hashedPassword, false, encryptedDecryptionKey, Object.values(rights));
+    const user = new User(oid, username, hashedPassword, false, encryptedDecryptionKey, Object.values(rights));
     users.push(user);
     storageHelper.storeUsers(users);
 
@@ -78,7 +77,7 @@ export const setUser = async context => {
     } else {
         // Test if the username is already occupied
         const existingUser = users.find(user => user.username == username);
-        if (existingUser && existingUser.oid != oid) return context.string("There exists another user with the same username.", 400);
+        if (username && existingUser && existingUser.oid != oid) return context.string("There exists another user with the same username.", 400);
 
         user = new User(oid, username, hashedPassword, true, encryptedDecryptionKey, rights, site);
         users.push(user);
@@ -91,8 +90,6 @@ export const setUser = async context => {
 
 export const deleteUser = context => {
     const oid = context.params.oid;
-
-    if (oid == ownerOID) return context.string("The owner of the server cannot be deleted.", 400);
 
     const user = users.find(user => user.oid == oid);
     if (!user) return context.string("User could not be found.", 404);
