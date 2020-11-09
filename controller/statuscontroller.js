@@ -8,5 +8,5 @@ export const getStatus = context => {
     const isInitialized = users.length > 0;
     const status = new Status(serverVersion, isInitialized);
     
-    return context.json(status);
+    return context.json(status, 200);
 };

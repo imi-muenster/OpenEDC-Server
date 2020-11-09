@@ -2,8 +2,7 @@ import * as storageHelper from "./helper/storagehelper.js";
 import { User } from "../models/usermodel.js";
 import { rights } from "./helper/authorizationhelper.js";
 
-export let users = [];
-// export let users = storageHelper.getUsers();
+export let users = storageHelper.getUsers();
 
 export const getUsers = context => {
     return context.json(users);
@@ -15,15 +14,15 @@ export const getUser = context => {
     const user = users.find(user => user.oid == oid);
     if (!user) return context.string("User could not be found.", 404);
 
-    return context.json(user);
+    return context.json(user, 200);
 };
 
 export const getRights = context => {
-    return context.json(rights);
+    return context.json(rights, 200);
 };
 
 export const getMe = (context, user) => {
-    return context.json(user);
+    return context.json(user, 200);
 }
 
 export const setMe = async (context, user) => {
@@ -97,5 +96,5 @@ export const deleteUser = context => {
     users = users.filter(user => user.oid != oid);
     storageHelper.storeUsers(users);
 
-    return context.json(user);
+    return context.json(user, 200);
 };

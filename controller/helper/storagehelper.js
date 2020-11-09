@@ -41,11 +41,24 @@ export const storeUsers = users => {
 }
 
 export const getUsers = () => {
-    const users = loadJSON(directories.userdata + usersFileName);
-    
-    // TODO: Transform into user class instances
+    let users = [];
 
-    return users ? users : [];
+    try {
+        const usersJSON = loadJSON(directories.userdata + usersFileName);
+        for (let userJSON of usersJSON) {
+            users.push(new User(
+                userJSON.oid,
+                userJSON.username,
+                userJSON.hashedPassword,
+                userJSON.hasInitialPassword,
+                userJSON.encryptedDecryptionKey,
+                userJSON.rights,
+                userJSON.site
+            ));
+        }
+    } catch {}
+
+    return users;
 }
 
 export const storeMetadata = metadata => {
@@ -72,7 +85,6 @@ export const getClinicaldata = fileName => {
     return loadXML(directories.clinicaldata + fileName);
 }
 
-// TODO: Naming -- __getSubjectFileNames?__ or getSubjectdataFileName? getSubjectDataFileName? Would be consistent with app's iohelper
 export const getClinicaldataFileNames = () => {
     const clinicaldataFileNames = [];
     for (const file of Deno.readDirSync(directories.clinicaldata)) {
@@ -83,5 +95,7 @@ export const getClinicaldataFileNames = () => {
 }
 
 export const removeClinicaldata = fileName => {
-    Deno.removeSync(directories.clinicaldata + fileName);
+    try {
+        Deno.removeSync(directories.clinicaldata + fileName);
+    } catch {}
 }
