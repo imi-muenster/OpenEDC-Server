@@ -7,12 +7,12 @@ const directories = {
     clinicaldata: "./data/clinicaldata/",
 }
 
-const usersFileName = "users";
-const settingsFileName = "settings";
-
-// TODO: Will probably be replaced by an fileName parameter such as for clinicaldata to be able to store versioned meta- and admindata
-const metadataFileName = "metadata";
-const admindataFileName = "admindata";
+const fileNames = {
+    users: "users",
+    settings: "settings",
+    metadata: "metadata",
+    admindata: "admindata"
+}
 
 // Ensures that all directories exist
 Array.from(Object.values(directories)).forEach(directory => {
@@ -38,14 +38,14 @@ const loadXML = fileName => {
 }
 
 export const storeUsers = users => {
-    storeJSON(directories.userdata + usersFileName, users);
+    storeJSON(directories.userdata + fileNames.users, users);
 }
 
 export const getUsers = () => {
     let users = [];
 
     try {
-        const usersJSON = loadJSON(directories.userdata + usersFileName);
+        const usersJSON = loadJSON(directories.userdata + fileNames.users);
         for (let userJSON of usersJSON) {
             users.push(new User(
                 userJSON.oid,
@@ -63,19 +63,19 @@ export const getUsers = () => {
 }
 
 export const storeMetadata = metadata => {
-    storeXML(directories.metadata + metadataFileName, metadata);
+    storeXML(directories.metadata + fileNames.metadata, metadata);
 }
 
 export const getMetadata = () => {
-    return loadXML(directories.metadata + metadataFileName);
+    return loadXML(directories.metadata + fileNames.metadata);
 }
 
 export const storeAdmindata = admindata => {
-    storeXML(directories.admindata + admindataFileName, admindata);
+    storeXML(directories.admindata + fileNames.admindata, admindata);
 }
 
 export const getAdmindata = () => {
-    return loadXML(directories.admindata + admindataFileName);
+    return loadXML(directories.admindata + fileNames.admindata);
 }
 
 export const storeClinicaldata = (fileName, clinicaldata) => {
@@ -102,12 +102,12 @@ export const removeClinicaldata = fileName => {
 }
 
 export const storeSettings = settings => {
-    storeJSON(directories.userdata + settingsFileName, settings);
+    storeJSON(directories.userdata + fileNames.settings, settings);
 }
 
 export const getSettings = () => {
     try {
-        return loadJSON(directories.userdata + settingsFileName);
+        return loadJSON(directories.userdata + fileNames.settings);
     } catch {
         return null;
     }

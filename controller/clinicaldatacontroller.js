@@ -5,14 +5,14 @@ export const getSubjects = (context, user) => {
 }
 
 export const getClinicaldata = async context => {
-    const fileName = context.params.fileName;
+    const fileName = context.params.fileName.replaceAll("%20", " ");
     const clinicaldata = storageHelper.getClinicaldata(fileName);
 
     return context.string(clinicaldata, 200);
 };
 
 export const setClinicaldata = async context => {
-    const fileName = context.params.fileName;
+    const fileName = context.params.fileName.replaceAll("%20", " ");
     const clinicaldata = await context.body;
     storageHelper.storeClinicaldata(fileName, clinicaldata);
 
@@ -20,7 +20,7 @@ export const setClinicaldata = async context => {
 };
 
 export const deleteClinicaldata = async context => {
-    const fileName = context.params.fileName;
+    const fileName = context.params.fileName.replaceAll("%20", " ");
     storageHelper.removeClinicaldata(fileName);
 
     return context.string("Clinicaldata successfully deleted.", 200);
