@@ -8,6 +8,7 @@ const directories = {
 }
 
 const usersFileName = "users";
+const settingsFileName = "settings";
 
 // TODO: Will probably be replaced by an fileName parameter such as for clinicaldata to be able to store versioned meta- and admindata
 const metadataFileName = "metadata";
@@ -98,4 +99,16 @@ export const removeClinicaldata = fileName => {
     try {
         Deno.removeSync(directories.clinicaldata + fileName);
     } catch {}
+}
+
+export const storeSettings = settings => {
+    storeJSON(directories.userdata + settingsFileName, settings);
+}
+
+export const getSettings = () => {
+    try {
+        return loadJSON(directories.userdata + settingsFileName);
+    } catch {
+        return null;
+    }
 }

@@ -25,6 +25,7 @@ export const requireAuthorization = next => context => {
         case "setUser":
         case "deleteUser":
         case "setAdmindata":
+        case "setSettings":
             if (!user.hasAuthorizationFor(rights.PROJECTOPTIONS)) return noAuthorization(context);
             break;
         case "setMetadata":

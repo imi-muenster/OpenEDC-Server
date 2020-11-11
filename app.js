@@ -1,11 +1,12 @@
-import { Application } from "https://deno.land/x/abc@v1.2.0/mod.ts";
-import { cors } from "https://deno.land/x/abc@v1.2.0/middleware/cors.ts";
+import { Application } from "https://deno.land/x/abc@v1.2.1/mod.ts";
+import { cors } from "https://deno.land/x/abc@v1.2.1/middleware/cors.ts";
 import { requireAuthorization } from "./controller/helper/authorizationhelper.js";
 import * as statusController from "./controller/statuscontroller.js";
 import * as usersController from "./controller/userscontroller.js";
 import * as metadataController from "./controller/metadatacontroller.js";
 import * as admindataController from "./controller/admindatacontroller.js";
 import * as clinicaldataController from "./controller/clinicaldatacontroller.js";
+import * as settingsController from "./controller/settingscontroller.js";
 
 const server = new Application();
 const port = parseInt(Deno.args[0]);
@@ -41,7 +42,9 @@ server
     .get(apiPrefix + "/clinicaldata", clinicaldataController.getSubjects, requireAuthorization)
     .get(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.getClinicaldata, requireAuthorization)
     .put(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.setClinicaldata, requireAuthorization)
-    .delete(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.deleteClinicaldata, requireAuthorization);
+    .delete(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.deleteClinicaldata, requireAuthorization)
+    .get(apiPrefix + "/settings", settingsController.getSettings, requireAuthorization)
+    .put(apiPrefix + "/settings", settingsController.setSettings, requireAuthorization);
 
 // Start server
 server.start({ port });
