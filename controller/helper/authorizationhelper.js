@@ -18,7 +18,6 @@ export const requireAuthorization = next => context => {
     const user = users.find(user => user.username == username);
     if (!user || user.hashedPassword != hashedPassword) return badAuthentication(context);
 
-    // TODO: Maybe replace by function.name;
     switch (next.name) {
         case "getUsers":
         case "getUser":

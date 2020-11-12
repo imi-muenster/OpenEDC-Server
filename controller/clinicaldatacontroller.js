@@ -24,7 +24,7 @@ export const setClinicaldata = async (context, user) => {
 
     const clinicaldata = await context.body;
     storageHelper.storeClinicaldata(fileName, clinicaldata);
-    return context.string("Metadata successfully stored.", 201);
+    return context.string("Clinicaldata successfully stored.", 201);
 };
 
 export const deleteClinicaldata = async context => {
