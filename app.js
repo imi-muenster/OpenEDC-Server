@@ -1,5 +1,5 @@
-import { Application } from "https://deno.land/x/abc@v1.2.1/mod.ts";
-import { cors } from "https://deno.land/x/abc@v1.2.1/middleware/cors.ts";
+import { Application } from "https://deno.land/x/abc@v1.2.2/mod.ts";
+import { cors } from "https://deno.land/x/abc@v1.2.2/middleware/cors.ts";
 import { requireAuthorization } from "./controller/helper/authorizationhelper.js";
 import * as statusController from "./controller/statuscontroller.js";
 import * as usersController from "./controller/userscontroller.js";
