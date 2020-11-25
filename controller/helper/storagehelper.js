@@ -5,6 +5,7 @@ const directories = {
     metadata: "./data/metadata/",
     admindata: "./data/admindata/",
     clinicaldata: "./data/clinicaldata/",
+    clinicaldataArchive: "./data/clinicaldata-archive/"
 }
 
 const fileNames = {
@@ -97,7 +98,7 @@ export const getClinicaldataFileNames = () => {
 
 export const removeClinicaldata = fileName => {
     try {
-        Deno.removeSync(directories.clinicaldata + fileName);
+        Deno.renameSync(directories.clinicaldata + fileName, directories.clinicaldataArchive + fileName);
     } catch {}
 }
 
