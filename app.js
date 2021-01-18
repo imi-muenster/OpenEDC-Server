@@ -1,6 +1,7 @@
 import { Application } from "https://deno.land/x/abc@v1.2.2/mod.ts";
 import { cors } from "https://deno.land/x/abc@v1.2.2/middleware/cors.ts";
 import { requireAuthorization } from "./controller/helper/authorizationhelper.js";
+import * as storageHelper from "./controller/helper/storagehelper.js";
 import * as statusController from "./controller/statuscontroller.js";
 import * as usersController from "./controller/userscontroller.js";
 import * as metadataController from "./controller/metadatacontroller.js";
@@ -45,6 +46,13 @@ server
     .delete(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.deleteClinicaldata, requireAuthorization)
     .get(apiPrefix + "/settings", settingsController.getSettings, requireAuthorization)
     .put(apiPrefix + "/settings", settingsController.setSettings, requireAuthorization);
+
+// Initialize storage
+const instance = Deno.args.length > 1 ? Deno.args[1] : null;
+storageHelper.init(instance);
+
+// Initialize users
+usersController.init();
 
 // Start server
 server.start({ port });

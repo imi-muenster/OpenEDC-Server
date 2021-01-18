@@ -1,13 +1,5 @@
 import { User } from "../../models/usermodel.js";
 
-const directories = {
-    userdata: "./data/",
-    metadata: "./data/metadata/",
-    admindata: "./data/admindata/",
-    clinicaldata: "./data/clinicaldata/",
-    clinicaldataArchive: "./data/clinicaldata-archive/"
-}
-
 const fileNames = {
     users: "users",
     settings: "settings",
@@ -15,12 +7,26 @@ const fileNames = {
     admindata: "admindata"
 }
 
-// Ensures that all directories exist
-Array.from(Object.values(directories)).forEach(directory => {
-    try {
-        Deno.mkdirSync(directory);
-    } catch {}
-});
+let directories;
+
+export const init = instance => {
+    // Set file storage directories
+    const root = instance ? "./data_" + instance : "./data";
+    directories = {
+        userdata: root + "/",
+        metadata: root + "/metadata/",
+        admindata: root + "/admindata/",
+        clinicaldata: root + "/clinicaldata/",
+        clinicaldataArchive: root + "/clinicaldata-archive/"
+    }
+
+    // Ensures that all directories exist
+    Array.from(Object.values(directories)).forEach(directory => {
+        try {
+            Deno.mkdirSync(directory);
+        } catch {}
+    });
+}
 
 const storeJSON = (fileName, data) => {
     Deno.writeTextFileSync(fileName, JSON.stringify(data));

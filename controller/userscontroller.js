@@ -2,7 +2,11 @@ import * as storageHelper from "./helper/storagehelper.js";
 import { User } from "../models/usermodel.js";
 import { rights } from "./helper/authorizationhelper.js";
 
-export let users = storageHelper.getUsers();
+export let users;
+
+export const init = () => {
+    users = storageHelper.getUsers();
+}
 
 export const getUsers = context => {
     return context.json(users);
