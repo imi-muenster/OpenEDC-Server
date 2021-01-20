@@ -1,4 +1,8 @@
 import * as storageHelper from "./helper/storagehelper.js";
+import { rights } from "./helper/authorizationhelper.js";
+
+// Must match the fileNameSeparator defined in the webapp (defined in the webapp since it must work offline as well)
+const fileNameSeparator = "__";
 
 export const getSubjects = context => {
    return context.json(storageHelper.getClinicaldataFileNames(), 200);
@@ -27,17 +31,29 @@ export const setClinicaldata = async (context, user) => {
     return context.string("Clinicaldata successfully stored.", 201);
 };
 
-export const deleteClinicaldata = async context => {
+export const deleteClinicaldata = async (context, user) => {
     const fileName = context.params.fileName.replaceAll("%20", " ");
-    storageHelper.removeClinicaldata(fileName);
 
+    // Users with the ADDSUBJECTDATA right might archive an expired clinical subject data version
+    // However, they need the MANAGESUBJECTS right to archive the last available version as well
+    const subjectKey = getSubjectKeyFromFileName(fileName);
+    let occurrences = 0;
+    for (const clinicaldataFileName of storageHelper.getClinicaldataFileNames()) {
+        if (subjectKey == getSubjectKeyFromFileName(clinicaldataFileName)) occurrences++;
+        if (occurrences > 1) break;
+    }
+    if (occurrences == 1 && !user.hasAuthorizationFor(rights.MANAGESUBJECTS)) return context.string("Not authorized to remove clinical data.", 403);
+
+    storageHelper.removeClinicaldata(fileName);
     return context.string("Clinicaldata successfully deleted.", 200);
 };
 
-function getSubjectSiteFromFileName(fileName) {
-    // Must match the fileNameSeparator defined in the webapp (defined in the webapp since it must work offline as well)
-    const fileNameSeparator = "__";
+function getSubjectKeyFromFileName(fileName) {
+    const fileNameParts = fileName.split(fileNameSeparator);
+    return fileNameParts[0];
+}
 
+function getSubjectSiteFromFileName(fileName) {
     const fileNameParts = fileName.split(fileNameSeparator);
     return fileNameParts[1] || null;
 }

@@ -27,14 +27,12 @@ export const requireAuthorization = next => context => {
         case "setSettings":
             if (!user.hasAuthorizationFor(rights.PROJECTOPTIONS)) return noAuthorization(context);
             break;
-        case "setMetadata":
-            if (!user.hasAuthorizationFor(rights.EDITMETADATA)) return noAuthorization(context);
-            break;
         case "setClinicaldata":
+        case "deleteClinicaldata":
             if (!user.hasAuthorizationFor(rights.ADDSUBJECTDATA)) return noAuthorization(context);
             break;
-        case "deleteClinicaldata":
-            if (!user.hasAuthorizationFor(rights.MANAGESUBJECTS)) return noAuthorization(context);
+        case "setMetadata":
+            if (!user.hasAuthorizationFor(rights.EDITMETADATA)) return noAuthorization(context);
     }
 
     return next(context, user);

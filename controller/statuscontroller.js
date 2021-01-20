@@ -1,7 +1,7 @@
 import { Status } from "../models/statusmodel.js";
 import { users } from "./userscontroller.js";
 
-const serverVersion = "1.0.0";
+const serverVersion = "0.1.0";
 
 export const getStatus = context => {
     const isInitialized = users.length > 0;

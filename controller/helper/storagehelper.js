@@ -53,7 +53,7 @@ export const getUsers = () => {
 
     try {
         const usersJSON = loadJSON(directories.userdata + fileNames.users);
-        for (let userJSON of usersJSON) {
+        for (const userJSON of usersJSON) {
             users.push(new User(
                 userJSON.oid,
                 userJSON.username,
