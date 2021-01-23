@@ -29,7 +29,7 @@ export const init = instance => {
 }
 
 const storeJSON = (fileName, data) => {
-    Deno.writeTextFileSync(fileName, JSON.stringify(data));
+    Deno.writeTextFileSync(fileName, JSON.stringify(data, null, 2));
 }
 
 const loadJSON = fileName => {
