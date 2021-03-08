@@ -2,7 +2,7 @@
 
 [OpenEDC](https://openedc.org/) is a free and open-source electronic data capture (EDC) system that lets you create and conduct secure clinical research studies based on the [CDISC ODM-XML](https://www.cdisc.org/standards/data-exchange/odm) format.
 
-While the OpenEDC App is a self-contained progressive web application (PWA), the OpenEDC Server can be used to move from a single-user to a multi-user and multi-centric research project. For this purpose, the OpenEDC Server mainly consists of an authentication and authorization service with a file storage. Since data is encrypted before it is sent from the app to the server, the server has no access to the data. It only stores encrypted files and manages access to them.
+While the OpenEDC App is a standalone progressive web application (PWA), the OpenEDC Server can be used to move from a single-user to a multi-user and multi-site research project with automated data backup. For this purpose, the OpenEDC Server provides an authentication and authorization service with a file storage. Since data is encrypted before it is sent from the OpenEDC App to the server, the server has no reading access to the data itself. It only stores encrypted files and manages access to them.
 
 The repository of the OpenEDC App can be found [here](https://github.com/imi-muenster/OpenEDC).
 
