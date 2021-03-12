@@ -38,7 +38,10 @@ export const setClinicaldata = async (context, user) => {
     // Users without the validate form right may not update a subject with a validated status
     const subjectKey = getSubjectKeyFromFileName(fileName);
     const existingSubject = storageHelper.getClinicaldataFileNames().find(clinicaldataFileName => subjectKey == getSubjectKeyFromFileName(clinicaldataFileName));
-    if (getSubjectStatusFromFileName(existingSubject) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to change data for a validated subject.", 403);
+    if (existingSubject && getSubjectStatusFromFileName(existingSubject) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to change data for a validated subject.", 403);
+
+    // Users without the validate form right may not validate a subject
+    if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to remove a validated subject.", 403);
 
     const clinicaldata = await context.body;
     storageHelper.storeClinicaldata(fileName, clinicaldata);
