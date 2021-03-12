@@ -18,7 +18,7 @@ You need to have Deno installed on your machine which can be downloaded [here](h
 
 After installing Deno, download all files from this repository and move them to a directory on your machine. All metadata and captured clinical data files will be later stored in this directory as well.
 
-Then, download all OpenEDC App files from [here](https://deno.land) and move them to the *public* folder within the previously created OpenEDC Server directory.
+Then, download all OpenEDC App files from [here](https://github.com/imi-muenster/OpenEDC) and move them to the *public* folder within the previously created OpenEDC Server directory.
 
 ### Deployment
 
@@ -29,6 +29,8 @@ deno run --allow-read --allow-write --allow-net app.js [port] [instance_name]
 ```
 
 Replace `[port]` with the port number you would like to run the OpenEDC Server at. This can be 3000, for example. If you would like to run multiple server instances on one machine, you can also specify an `[instance_name]`. The server will then create a new directory with all files for this instance. Do not forget to specify a different port number for each instance. If you only want to run a single instance, you can omit the instance name.
+
+**Important:** If you want to be able to sync data from the OpenEDC App to the server, the server must be available over HTTPS. Otherwise, your browser will block the mixed content fetch request. If you are using HTTP, you can still use the locally hosted OpenEDC App to connect to and initialize your server. Remember to put `http://` in front of the URL during the server initialization (*Project Options* within the App) in this case.
 
 ## Contributing
 
