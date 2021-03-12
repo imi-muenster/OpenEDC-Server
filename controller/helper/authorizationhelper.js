@@ -1,10 +1,12 @@
 import { users } from "../userscontroller.js";
 
+// Must match the userRights defined in the webapp (defined in the webapp since it must work offline as well)
 export const rights = {
     PROJECTOPTIONS: "Project options",
     EDITMETADATA: "Edit metadata",
-    ADDSUBJECTDATA: "Add subject data",
-    MANAGESUBJECTS: "Manage subjects"
+    MANAGESUBJECTS: "Manage subjects",
+    VALIDATEFORMS: "Validate forms",
+    ADDSUBJECTDATA: "Add subject data"
 };
 
 export const requireAuthorization = next => context => {
