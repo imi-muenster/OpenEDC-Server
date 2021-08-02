@@ -15,10 +15,10 @@ export const requireAuthorization = next => context => {
 
     const basicAuthParts = atob(authentication.split(" ")[1]).split(":");
     const username = basicAuthParts[0];
-    const hashedPassword = basicAuthParts[1];
+    const authenticationKey = basicAuthParts[1];
 
     const user = users.find(user => user.username.toLowerCase() == username.toLowerCase());
-    if (!user || user.hashedPassword != hashedPassword) return badAuthentication(context);
+    if (!user || user.authenticationKey != authenticationKey) return badAuthentication(context);
 
     switch (next.name) {
         case "getUsers":

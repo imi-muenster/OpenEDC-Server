@@ -1,8 +1,8 @@
 export class User {
-    constructor(oid, username, hashedPassword, hasInitialPassword, encryptedDecryptionKey, rights, site) {
+    constructor(oid, username, authenticationKey, hasInitialPassword, encryptedDecryptionKey, rights, site) {
         this.oid = oid;
         this.username = username;
-        this.hashedPassword = hashedPassword;
+        this.authenticationKey = authenticationKey;
         this.hasInitialPassword = hasInitialPassword;
         this.encryptedDecryptionKey = encryptedDecryptionKey;
         this.rights = rights || [];

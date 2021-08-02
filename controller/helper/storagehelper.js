@@ -57,7 +57,7 @@ export const getUsers = () => {
             users.push(new User(
                 userJSON.oid,
                 userJSON.username,
-                userJSON.hashedPassword,
+                userJSON.authenticationKey,
                 userJSON.hasInitialPassword,
                 userJSON.encryptedDecryptionKey,
                 userJSON.rights,
