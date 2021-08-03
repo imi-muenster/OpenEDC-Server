@@ -1,6 +1,9 @@
 import * as storageHelper from "./helper/storagehelper.js";
 import { rights } from "./helper/authorizationhelper.js";
 
+// Keep last update to be fetched from the client
+export let lastUpdate;
+
 // Must match the fileNameSeparator defined in the webapp (defined in the webapp since it must work offline as well)
 const fileNameSeparator = "__";
 
@@ -31,6 +34,9 @@ export const getClinicaldata = async (context, user) => {
 export const setClinicaldata = async (context, user) => {
     const fileName = context.params.fileName.replaceAll("%20", " ");
 
+    // A subject with the exact same modified date cannot be overwritten
+    if (storageHelper.getClinicaldata(fileName)) return context.string("Clinical data instance already exists.", 400);
+
     if (user.site && user.site != getSubjectSiteFromFileName(fileName)) {
         return context.string("You are not allowed to set clinical data for a subject that is assigned to another site than you.", 403);
     }
@@ -41,10 +47,11 @@ export const setClinicaldata = async (context, user) => {
     if (existingSubject && getSubjectStatusFromFileName(existingSubject) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to change data for a validated subject.", 403);
 
     // Users without the validate form right may not validate a subject
-    if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to remove a validated subject.", 403);
+    if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to validate a subject.", 403);
 
     const clinicaldata = await context.body;
     storageHelper.storeClinicaldata(fileName, clinicaldata);
+    lastUpdate = getSubjectModifiedFromFileName(fileName);
     return context.string("Clinicaldata successfully stored.", 201);
 };
 
@@ -76,6 +83,11 @@ function getSubjectKeyFromFileName(fileName) {
 function getSubjectSiteFromFileName(fileName) {
     const fileNameParts = fileName.split(fileNameSeparator);
     return fileNameParts[1] || null;
+}
+
+function getSubjectModifiedFromFileName(fileName) {
+    const fileNameParts = fileName.split(fileNameSeparator);
+    return fileNameParts[3] || null;
 }
 
 function getSubjectStatusFromFileName(fileName) {

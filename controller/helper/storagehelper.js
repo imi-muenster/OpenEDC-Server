@@ -2,9 +2,7 @@ import { User } from "../../models/usermodel.js";
 
 const fileNames = {
     users: "users",
-    settings: "settings",
-    metadata: "metadata",
-    admindata: "admindata"
+    settings: "settings"
 }
 
 let directories;
@@ -17,7 +15,7 @@ export const init = instance => {
         metadata: root + "/metadata/",
         admindata: root + "/admindata/",
         clinicaldata: root + "/clinicaldata/",
-        clinicaldataArchive: root + "/clinicaldata-archive/"
+        archive: root + "/archive/"
     }
 
     // Ensures that all directories exist
@@ -41,7 +39,9 @@ const storeXML = (fileName, data) => {
 }
 
 const loadXML = fileName => {
-    return Deno.readTextFileSync(fileName);
+    try {
+        return Deno.readTextFileSync(fileName);
+    } catch {}
 }
 
 export const storeUsers = users => {
@@ -69,20 +69,32 @@ export const getUsers = () => {
     return users;
 }
 
-export const storeMetadata = metadata => {
-    storeXML(directories.metadata + fileNames.metadata, metadata);
+export const storeMetadata = (fileName, metadata) => {
+    storeXML(directories.metadata + fileName, metadata);
 }
 
-export const getMetadata = () => {
-    return loadXML(directories.metadata + fileNames.metadata);
+export const getMetadata = fileName => {
+    return loadXML(directories.metadata + fileName);
 }
 
-export const storeAdmindata = admindata => {
-    storeXML(directories.admindata + fileNames.admindata, admindata);
+export const removeMetadata = fileName => {
+    try {
+        Deno.renameSync(directories.metadata + fileName, directories.archive + fileName);
+    } catch {}
 }
 
-export const getAdmindata = () => {
-    return loadXML(directories.admindata + fileNames.admindata);
+export const storeAdmindata = (fileName, admindata) => {
+    storeXML(directories.admindata + fileName, admindata);
+}
+
+export const getAdmindata = fileName => {
+    return loadXML(directories.admindata + fileName);
+}
+
+export const removeAdmindata = fileName => {
+    try {
+        Deno.renameSync(directories.admindata + fileName, directories.archive + fileName);
+    } catch {}
 }
 
 export const storeClinicaldata = (fileName, clinicaldata) => {
@@ -115,7 +127,5 @@ export const storeSettings = settings => {
 export const getSettings = () => {
     try {
         return loadJSON(directories.userdata + fileNames.settings);
-    } catch {
-        return null;
-    }
+    } catch {}
 }
