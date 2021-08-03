@@ -1,4 +1,8 @@
 import { User } from "../../models/usermodel.js";
+import { lastUpdate } from "../statuscontroller.js";
+
+// Must match the fileNameSeparator defined in the webapp (defined in the webapp since it must work offline as well)
+const fileNameSeparator = "__";
 
 const fileNames = {
     users: "users",
@@ -24,6 +28,20 @@ export const init = instance => {
             Deno.mkdirSync(directory);
         } catch {}
     });
+
+    // Get the last updated date for metadata, admindata, and clinicaldata
+    lastUpdate.metadata = getFileNamesOfDirectory(directories.metadata).reduce((lastUpdated, fileName) => {
+        const modifiedDate = getMetadataModifiedFromFileName(fileName);
+        modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
+    }, 0);
+    lastUpdate.admindata = getFileNamesOfDirectory(directories.admindata).reduce((lastUpdated, fileName) => {
+        const modifiedDate = getAdmindataModifiedFromFileName(fileName);
+        modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
+    }, 0);
+    lastUpdate.clinicaldata = getFileNamesOfDirectory(directories.clinicaldata).reduce((lastUpdated, fileName) => {
+        const modifiedDate = getSubjectModifiedFromFileName(fileName);
+        modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
+    }, 0);
 }
 
 const storeJSON = (fileName, data) => {
@@ -71,6 +89,7 @@ export const getUsers = () => {
 
 export const storeMetadata = (fileName, metadata) => {
     storeXML(directories.metadata + fileName, metadata);
+    lastUpdate.metadata = getMetadataModifiedFromFileName(fileName);
 }
 
 export const getMetadata = fileName => {
@@ -85,6 +104,7 @@ export const removeMetadata = fileName => {
 
 export const storeAdmindata = (fileName, admindata) => {
     storeXML(directories.admindata + fileName, admindata);
+    lastUpdate.admindata = getAdmindataModifiedFromFileName(fileName);
 }
 
 export const getAdmindata = fileName => {
@@ -99,6 +119,7 @@ export const removeAdmindata = fileName => {
 
 export const storeClinicaldata = (fileName, clinicaldata) => {
     storeXML(directories.clinicaldata + fileName, clinicaldata);
+    lastUpdate.clinicaldata = getSubjectModifiedFromFileName(fileName);
 }
 
 export const getClinicaldata = fileName => {
@@ -106,12 +127,7 @@ export const getClinicaldata = fileName => {
 }
 
 export const getClinicaldataFileNames = () => {
-    const clinicaldataFileNames = [];
-    for (const file of Deno.readDirSync(directories.clinicaldata)) {
-        clinicaldataFileNames.push(file.name);
-    }
-
-    return clinicaldataFileNames;
+    return getFileNamesOfDirectory(directories.clinicaldata);
 }
 
 export const removeClinicaldata = fileName => {
@@ -128,4 +144,28 @@ export const getSettings = () => {
     try {
         return loadJSON(directories.userdata + fileNames.settings);
     } catch {}
+}
+
+function getFileNamesOfDirectory(directory) {
+    const fileNames = [];
+    for (const file of Deno.readDirSync(directory)) {
+        fileNames.push(file.name);
+    }
+
+    return fileNames;
+}
+
+function getMetadataModifiedFromFileName(fileName) {
+    const fileNameParts = fileName.split(fileNameSeparator);
+    return parseInt(fileNameParts[1]) || null;
+}
+
+function getAdmindataModifiedFromFileName(fileName) {
+    const fileNameParts = fileName.split(fileNameSeparator);
+    return parseInt(fileNameParts[1]) || null;
+}
+
+function getSubjectModifiedFromFileName(fileName) {
+    const fileNameParts = fileName.split(fileNameSeparator);
+    return parseInt(fileNameParts[3]) || null;
 }

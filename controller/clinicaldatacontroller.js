@@ -1,9 +1,6 @@
 import * as storageHelper from "./helper/storagehelper.js";
 import { rights } from "./helper/authorizationhelper.js";
 
-// Keep last update to be fetched from the client
-export let lastUpdate;
-
 // Must match the fileNameSeparator defined in the webapp (defined in the webapp since it must work offline as well)
 const fileNameSeparator = "__";
 
@@ -51,7 +48,6 @@ export const setClinicaldata = async (context, user) => {
 
     const clinicaldata = await context.body;
     storageHelper.storeClinicaldata(fileName, clinicaldata);
-    lastUpdate = getSubjectModifiedFromFileName(fileName);
     return context.string("Clinicaldata successfully stored.", 201);
 };
 
@@ -83,11 +79,6 @@ function getSubjectKeyFromFileName(fileName) {
 function getSubjectSiteFromFileName(fileName) {
     const fileNameParts = fileName.split(fileNameSeparator);
     return fileNameParts[1] || null;
-}
-
-function getSubjectModifiedFromFileName(fileName) {
-    const fileNameParts = fileName.split(fileNameSeparator);
-    return fileNameParts[3] || null;
 }
 
 function getSubjectStatusFromFileName(fileName) {
