@@ -32,7 +32,7 @@ export const setClinicaldata = async (context, user) => {
     const fileName = context.params.fileName.replaceAll("%20", " ");
 
     // A subject with the exact same modified date cannot be overwritten
-    if (storageHelper.getClinicaldata(fileName)) return context.string("Clinical data instance already exists.", 400);
+    if (storageHelper.fileExist(fileName)) return context.string("Clinical data instance already exists.", 400);
 
     if (user.site && user.site != getSubjectSiteFromFileName(fileName)) {
         return context.string("You are not allowed to set clinical data for a subject that is assigned to another site than you.", 403);
@@ -67,6 +67,7 @@ export const deleteClinicaldata = async (context, user) => {
     // Users without the validate form right may not delete a subject with a validated status
     if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to remove a validated subject.", 403);
 
+    console.log(fileName);
     storageHelper.removeClinicaldata(fileName);
     return context.string("Clinicaldata successfully deleted.", 200);
 };

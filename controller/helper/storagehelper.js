@@ -32,15 +32,15 @@ export const init = instance => {
     // Get the last updated date for metadata, admindata, and clinicaldata
     lastUpdate.metadata = getFileNamesOfDirectory(directories.metadata).reduce((lastUpdated, fileName) => {
         const modifiedDate = getMetadataModifiedFromFileName(fileName);
-        modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
+        return modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
     }, 0);
     lastUpdate.admindata = getFileNamesOfDirectory(directories.admindata).reduce((lastUpdated, fileName) => {
         const modifiedDate = getAdmindataModifiedFromFileName(fileName);
-        modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
+        return modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
     }, 0);
     lastUpdate.clinicaldata = getFileNamesOfDirectory(directories.clinicaldata).reduce((lastUpdated, fileName) => {
         const modifiedDate = getSubjectModifiedFromFileName(fileName);
-        modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
+        return modifiedDate > lastUpdated ? modifiedDate : lastUpdated;
     }, 0);
 }
 
@@ -57,8 +57,12 @@ const storeXML = (fileName, data) => {
 }
 
 const loadXML = fileName => {
+    return Deno.readTextFileSync(fileName);
+}
+
+export const fileExist = fileName => {
     try {
-        return Deno.readTextFileSync(fileName);
+        return Deno.readTextFileSync(fileName) ? true : false;
     } catch {}
 }
 
@@ -132,7 +136,7 @@ export const getClinicaldataFileNames = () => {
 
 export const removeClinicaldata = fileName => {
     try {
-        Deno.renameSync(directories.clinicaldata + fileName, directories.clinicaldataArchive + fileName);
+        Deno.renameSync(directories.clinicaldata + fileName, directories.archive + fileName);
     } catch {}
 }
 

@@ -11,7 +11,7 @@ export const setAdmindata = async context => {
     const fileName = context.params.fileName;
 
     // Admindata with the exact same modified date cannot be overwritten
-    if (storageHelper.getAdmindata(fileName)) return context.string("Admindata instance already exists.", 400);
+    if (storageHelper.fileExist(fileName)) return context.string("Admindata instance already exists.", 400);
 
     const admindata = await context.body;
     storageHelper.storeAdmindata(fileName, admindata);

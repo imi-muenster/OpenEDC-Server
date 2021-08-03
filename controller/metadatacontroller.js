@@ -11,7 +11,7 @@ export const setMetadata = async context => {
     const fileName = context.params.fileName;
 
     // Metadata with the exact same modified date cannot be overwritten
-    if (storageHelper.getMetadata(fileName)) return context.string("Metadata instance already exists.", 400);
+    if (storageHelper.fileExist(fileName)) return context.string("Metadata instance already exists.", 400);
 
     const metadata = await context.body;
     storageHelper.storeMetadata(fileName, metadata);
