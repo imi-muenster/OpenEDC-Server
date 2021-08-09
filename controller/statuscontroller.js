@@ -2,7 +2,7 @@ import { Status } from "../models/statusmodel.js";
 import { Update } from "../models/updatemodel.js";
 import { users } from "./userscontroller.js";
 
-const serverVersion = "0.2.1";
+const serverVersion = "0.3.0";
 
 export const lastUpdate = new Update();
 

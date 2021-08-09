@@ -67,7 +67,6 @@ export const deleteClinicaldata = async (context, user) => {
     // Users without the validate form right may not delete a subject with a validated status
     if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to remove a validated subject.", 403);
 
-    console.log(fileName);
     storageHelper.removeClinicaldata(fileName);
     return context.string("Clinicaldata successfully deleted.", 200);
 };
