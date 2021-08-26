@@ -1,5 +1,6 @@
 import * as storageHelper from "./helper/storagehelper.js";
 import { rights } from "./helper/authorizationhelper.js";
+import { lastUpdate } from "./statuscontroller.js";
 
 // Must match the fileNameSeparator defined in the webapp (defined in the webapp since it must work offline as well)
 const fileNameSeparator = "__";
@@ -14,7 +15,7 @@ const dataStatusTypes = {
 };
 
 export const getSubjects = context => {
-   return context.json(storageHelper.getClinicaldataFileNames(), 200);
+   return context.json(storageHelper.getFileNamesOfDirectory(storageHelper.directories.CLINICALDATA), 200);
 }
 
 export const getClinicaldata = async (context, user) => {
@@ -24,7 +25,7 @@ export const getClinicaldata = async (context, user) => {
         return context.string("You are not allowed to get clinical data from a subject that is assigned to another site than you.", 403);
     }
 
-    const clinicaldata = storageHelper.getClinicaldata(fileName);
+    const clinicaldata = storageHelper.loadXML(storageHelper.directories.CLINICALDATA, fileName);
     return context.string(clinicaldata, 200);
 };
 
@@ -40,14 +41,15 @@ export const setClinicaldata = async (context, user) => {
 
     // Users without the validate form right may not update a subject with a validated status
     const subjectKey = getSubjectKeyFromFileName(fileName);
-    const existingSubject = storageHelper.getClinicaldataFileNames().find(clinicaldataFileName => subjectKey == getSubjectKeyFromFileName(clinicaldataFileName));
+    const existingSubject = storageHelper.getFileNamesOfDirectory(storageHelper.directories.CLINICALDATA).find(clinicaldataFileName => subjectKey == getSubjectKeyFromFileName(clinicaldataFileName));
     if (existingSubject && getSubjectStatusFromFileName(existingSubject) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to change data for a validated subject.", 403);
 
     // Users without the validate form right may not validate a subject
     if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to validate a subject.", 403);
 
     const clinicaldata = await context.body;
-    storageHelper.storeClinicaldata(fileName, clinicaldata);
+    storageHelper.storeXML(storageHelper.directories.CLINICALDATA, fileName, clinicaldata);
+    lastUpdate.clinicaldata = storageHelper.getClinicaldataModifiedFromFileName(fileName);
     return context.string("Clinicaldata successfully stored.", 201);
 };
 
@@ -58,7 +60,7 @@ export const deleteClinicaldata = async (context, user) => {
     // However, they need the MANAGESUBJECTS right to archive the last available version as well
     const subjectKey = getSubjectKeyFromFileName(fileName);
     let occurrences = 0;
-    for (const clinicaldataFileName of storageHelper.getClinicaldataFileNames()) {
+    for (const clinicaldataFileName of getFileNamesOfDirectory(storageHelper.directories.CLINICALDATA)) {
         if (subjectKey == getSubjectKeyFromFileName(clinicaldataFileName)) occurrences++;
         if (occurrences > 1) break;
     }
@@ -67,7 +69,7 @@ export const deleteClinicaldata = async (context, user) => {
     // Users without the validate form right may not delete a subject with a validated status
     if (getSubjectStatusFromFileName(fileName) == dataStatusTypes.VALIDATED && !user.hasAuthorizationFor(rights.VALIDATEFORMS)) return context.string("Not authorized to remove a validated subject.", 403);
 
-    storageHelper.removeClinicaldata(fileName);
+    storageHelper.removeFile(storageHelper.directories.CLINICALDATA, fileName);
     return context.string("Clinicaldata successfully deleted.", 200);
 };
 

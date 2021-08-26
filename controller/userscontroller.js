@@ -2,10 +2,23 @@ import * as storageHelper from "./helper/storagehelper.js";
 import { User } from "../models/usermodel.js";
 import { rights } from "./helper/authorizationhelper.js";
 
-export let users;
+export let users = [];
 
 export const init = () => {
-    users = storageHelper.getUsers();
+    try {
+        const usersJSON = storageHelper.loadJSON(storageHelper.directories.ROOT, "users");
+        for (const userJSON of usersJSON) {
+            users.push(new User(
+                userJSON.oid,
+                userJSON.username,
+                userJSON.authenticationKey,
+                userJSON.hasInitialPassword,
+                userJSON.encryptedDecryptionKey,
+                userJSON.rights,
+                userJSON.site
+            ));
+        }
+    } catch {}
 }
 
 export const getUsers = context => {
@@ -40,7 +53,7 @@ export const setMe = async (context, user) => {
     user.authenticationKey = authenticationKey;
     user.hasInitialPassword = false;
     user.encryptedDecryptionKey = encryptedDecryptionKey;
-    storageHelper.storeUsers(users);
+    storageHelper.storeJSON(storageHelper.directories.ROOT, "users", users);
     
     return context.json(user, 201);
 }
@@ -57,7 +70,7 @@ export const initializeUser = async context => {
 
     const user = new User(oid, username, authenticationKey, false, encryptedDecryptionKey, Object.values(rights));
     users.push(user);
-    storageHelper.storeUsers(users);
+    storageHelper.storeJSON(storageHelper.directories.ROOT, "users", users);
 
     return context.json(user, 201);
 };
@@ -86,7 +99,7 @@ export const setUser = async context => {
         users.push(user);
     }
 
-    storageHelper.storeUsers(users);
+    storageHelper.storeJSON(storageHelper.directories.ROOT, "users", users);
 
     return context.json(user, 201);
 };
@@ -98,7 +111,7 @@ export const deleteUser = context => {
     if (!user) return context.string("User could not be found.", 404);
 
     users = users.filter(user => user.oid != oid);
-    storageHelper.storeUsers(users);
+    storageHelper.storeJSON(storageHelper.directories.ROOT, "users", users);
 
     return context.json(user, 200);
 };
