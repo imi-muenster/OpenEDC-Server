@@ -44,7 +44,9 @@ export const storeJSON = (directory, fileName, data) => {
 }
 
 export const loadJSON = (directory, fileName) => {
-    return JSON.parse(Deno.readTextFileSync(directory + fileName));
+    try {
+        return JSON.parse(Deno.readTextFileSync(directory + fileName));
+    } catch {}
 }
 
 export const storeXML = (directory, fileName, data) => {
