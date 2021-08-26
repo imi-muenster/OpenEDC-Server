@@ -27,7 +27,8 @@ export const requireAuthorization = next => context => {
         case "deleteUser":
         case "setAdmindata":
         case "deleteAdmindata":
-        case "setSettings":
+        case "setJSON":
+        case "deleteJSON":
             if (!user.hasAuthorizationFor(rights.PROJECTOPTIONS)) return noAuthorization(context);
             break;
         case "setClinicaldata":

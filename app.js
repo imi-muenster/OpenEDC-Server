@@ -7,7 +7,7 @@ import * as usersController from "./controller/userscontroller.js";
 import * as metadataController from "./controller/metadatacontroller.js";
 import * as admindataController from "./controller/admindatacontroller.js";
 import * as clinicaldataController from "./controller/clinicaldatacontroller.js";
-import * as settingsController from "./controller/settingscontroller.js";
+import * as jsonController from "./controller/jsoncontroller.js";
 
 const server = new Application();
 const port = parseInt(Deno.args[0]);
@@ -47,8 +47,9 @@ server
     .get(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.getClinicaldata, requireAuthorization)
     .put(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.setClinicaldata, requireAuthorization)
     .delete(apiPrefix + "/clinicaldata/:fileName", clinicaldataController.deleteClinicaldata, requireAuthorization)
-    .get(apiPrefix + "/settings", settingsController.getSettings, requireAuthorization)
-    .put(apiPrefix + "/settings", settingsController.setSettings, requireAuthorization);
+    .get(apiPrefix + "/json/:fileName", jsonController.getJSON, requireAuthorization)
+    .put(apiPrefix + "/json/:fileName", jsonController.setJSON, requireAuthorization)
+    .delete(apiPrefix + "/json/:fileName", jsonController.deleteJSON, requireAuthorization);
 
 // Initialize storage
 const instance = Deno.args.length > 1 ? Deno.args[1] : null;

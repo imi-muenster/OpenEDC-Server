@@ -13,6 +13,7 @@ export const init = instance => {
         METADATA: root + "/metadata/",
         ADMINDATA: root + "/admindata/",
         CLINICALDATA: root + "/clinicaldata/",
+        MISC: root + "/misc/",
         ARCHIVE: root + "/archive/"
     }
 
