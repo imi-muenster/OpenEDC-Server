@@ -60,7 +60,7 @@ export const deleteClinicaldata = async (context, user) => {
     // However, they need the MANAGESUBJECTS right to archive the last available version as well
     const subjectKey = getSubjectKeyFromFileName(fileName);
     let occurrences = 0;
-    for (const clinicaldataFileName of getFileNamesOfDirectory(storageHelper.directories.CLINICALDATA)) {
+    for (const clinicaldataFileName of storageHelper.getFileNamesOfDirectory(storageHelper.directories.CLINICALDATA)) {
         if (subjectKey == getSubjectKeyFromFileName(clinicaldataFileName)) occurrences++;
         if (occurrences > 1) break;
     }
