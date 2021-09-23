@@ -9,7 +9,7 @@ export const rights = {
     ADDSUBJECTDATA: "add-subject-data"
 };
 
-export const requireAuthorization = next => context => {
+export const authorizationMiddleware = (next, requiredAuthorization) => context => {
     const authentication = context.request.headers.get("Authorization");
     if (!authentication || !authentication.split(" ")[0] == "Basic") return noAuthentication(context);
 
@@ -20,24 +20,9 @@ export const requireAuthorization = next => context => {
     const user = users.find(user => user.username.toLowerCase() == username.toLowerCase());
     if (!user || user.authenticationKey != authenticationKey) return badAuthentication(context);
 
-    switch (next.name) {
-        case "getUsers":
-        case "getUser":
-        case "setUser":
-        case "deleteUser":
-        case "setAdmindata":
-        case "deleteAdmindata":
-        case "setJSON":
-        case "deleteJSON":
-            if (!user.hasAuthorizationFor(rights.PROJECTOPTIONS)) return noAuthorization(context);
-            break;
-        case "setClinicaldata":
-        case "deleteClinicaldata":
-            if (!user.hasAuthorizationFor(rights.ADDSUBJECTDATA)) return noAuthorization(context);
-            break;
-        case "setMetadata":
-        case "deleteMetadata":
-            if (!user.hasAuthorizationFor(rights.EDITMETADATA)) return noAuthorization(context);
+    // TODO: if-statement not required if user.hasAuthorizationFor() is improved to return true if requiredAuthorization is true
+    if (requiredAuthorization && typeof requiredAuthorization == "string") {
+        if (!user.hasAuthorizationFor(requiredAuthorization)) return noAuthorization(context);
     }
 
     return next(context, user);
