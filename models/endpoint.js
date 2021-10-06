@@ -1,8 +1,6 @@
 import { authorizationMiddleware } from "../controller/helper/authorizationhelper.js";
 
 export default class Endpoint {
-    static prefix = "/api";
-
     static methods = {
         GET: "get",
         POST: "post",
@@ -12,7 +10,7 @@ export default class Endpoint {
 
     constructor(method, path, logic, authorization = true) {
         this.method = method;
-        this.path = Endpoint.prefix + path;
+        this.path = path;
         this.logic = logic;
         this.authorization = authorization;
     }

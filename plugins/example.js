@@ -7,7 +7,7 @@ import { rights as userRights } from "../controller/helper/authorizationhelper.j
 
 export default () => {
     return [
-        new Endpoint(Endpoint.methods.GET, "/example/:name", helloWorld, userRights.PROJECTOPTIONS)
+        new Endpoint(Endpoint.methods.GET, "/api/example/:name", helloWorld, userRights.PROJECTOPTIONS)
         // new Endpoint(Endpoint.methods.POST, ...)
     ];
 }
