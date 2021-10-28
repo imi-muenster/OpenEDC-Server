@@ -5,12 +5,10 @@
 import Endpoint from "../models/endpoint.js";
 import { rights as userRights } from "../controller/helper/authorizationhelper.js";
 
-export default () => {
-    return [
-        new Endpoint(Endpoint.methods.GET, "/api/example/:name", helloWorld, userRights.PROJECTOPTIONS)
-        // new Endpoint(Endpoint.methods.POST, ...)
-    ];
-}
+export default () => [
+    new Endpoint(Endpoint.methods.GET, "/api/example", helloWorld, userRights.PROJECTOPTIONS)
+    // new Endpoint(Endpoint.methods.POST, ...)
+];
 
 const helloWorld = (context, user) => {
     // Get the request body with await context.body;
@@ -18,4 +16,4 @@ const helloWorld = (context, user) => {
     // Get query parameters with const { param1, param2 } = context.queryParams;
     
     return context.string(`Hello, ${user.username}!`, 200);
-}
+};
